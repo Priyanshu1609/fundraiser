@@ -1,21 +1,20 @@
 require("@nomiclabs/hardhat-waffle");
+require('dotenv').config({ path: './env.local' });
 
-// This is a sample Hardhat task. To learn how to create your own go to
-// https://hardhat.org/guides/create-task.html
-task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
-  const accounts = await hre.ethers.getSigners();
 
-  for (const account of accounts) {
-    console.log(account.address);
-  }
-});
-
-// You need to export an object to set up your config
-// Go to https://hardhat.org/config/ to learn more
-
-/**
- * @type import('hardhat/config').HardhatUserConfig
- */
 module.exports = {
   solidity: "0.8.4",
+  defaultNetwork: 'mumbai',
+  paths: {
+    artifacts: './src/artifacts',
+  },
+  networks: {
+    hardhat: {
+      chainId: 1337
+    },
+    mumbai: {
+      url: `https://speedy-nodes-nyc.moralis.io/1f78a0705fba1289cf96bf3b/polygon/mumbai`,
+      accounts: [`9916b9f39c79ea56ad8e805fc4ed4356fcd93fe6f8721399d866c0c4d9db06e2`],
+    }
+  }
 };
