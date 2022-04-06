@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 import Modal from 'react-modal'
-import TransactionLoader from '../components/TransactionLoader'
 import { useRouter } from 'next/router'
 
+import TransactionLoader from '../components/TransactionLoader'
 import { TransactionContext } from '../context/TransactionContext'
 
 
