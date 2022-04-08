@@ -96,8 +96,7 @@ export const TransactionProvider = ({ children }) => {
             await campaignData.wait();
             console.log('Campaign Address', campaignData.to);
             alert('Campaign Created Successfully', campaignData.to);
-            router.push(`/${campaignData.to}`);
-
+            router.push(`/`);
             setAddress(campaignData.to);
         }
     }
@@ -144,7 +143,7 @@ export const TransactionProvider = ({ children }) => {
             throw new Error('No ethereum object.')
         }
     }
-    
+
 
     const handleChange = (e, name) => {
         setFormData(prevState => ({ ...prevState, [name]: e.target.value }))
