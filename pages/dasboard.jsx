@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 
 import Card from '../components/Card'
