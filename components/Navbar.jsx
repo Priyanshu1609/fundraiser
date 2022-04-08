@@ -24,8 +24,6 @@ const Navbar = () => {
 
   const handleClickDashboard = () => router.push("/dashboard");
 
-  const handleClickSignOut = () => logoutWallet() && router.push("/");
-
 
   return (
     <div className="sticky top-0 ">
@@ -38,11 +36,11 @@ const Navbar = () => {
 
             {/* NavBarItems */}
 
-            <div className="hidden sm:flex sm:items-center">
+            {currentAccount && <div className="hidden sm:flex sm:items-center">
               <p className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickHome} >Campaigns</p>
               <p className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickCampaign} >Create Campaign</p>
               <p className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickDashboard} >Dashboard</p>
-            </div>
+            </div>}
 
             {/* Auth Buttons */}
             <div className="hidden sm:flex sm:items-center space-x-2">
@@ -55,7 +53,6 @@ const Navbar = () => {
                 </div>}
                 {currentAccount && <AuthButton
                   text={`${userName}`}
-                  onClick={handleClickSignOut}
                 />}
               </>
             </div>

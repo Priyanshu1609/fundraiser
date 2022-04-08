@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { abi } from "../src/artifacts/contracts/Campaign.sol/CampaignFactory.json"
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
+import { toast } from 'react-toastify';
 
-const contractAddress = 0xD4201B010e217EbB78f1aa587d4469d23737637E;
+import contractABI from "../src/artifacts/contracts/Campaign.sol/CampaignFactory.json"
+const contractAddress = '0x35cc3c9CDfCBD324e9de15947213a2D650a2dd35';
 
 export const TransactionContext = React.createContext()
 
@@ -18,7 +19,7 @@ const getEthereumContract = () => {
     const signer = provider.getSigner()
     const transactionContract = new ethers.Contract(
         contractAddress,
-        contractABI,
+        contractABI.abi,
         signer,
     )
 
@@ -41,23 +42,65 @@ const networks = {
 
 export const TransactionProvider = ({ children }) => {
     const [currentAccount, setCurrentAccount] = useState()
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+    const [address, setAddress] = useState("");
     const router = useRouter();
+
     const [formData, setFormData] = useState({
-        name: '',
+        title: '',
         description: '',
-        goal: '',
-        image: '',
+        amount: '',
     })
+    const [image, setImage] = useState(null)
+    const [imageUrl, setImageUrl] = useState('asdfasdf')
     console.log(formData);
 
-    useEffect(() => {
-        if (isLoading) {
-            router.push(`/?loading=${currentAccount}`)
-        } else {
-            router.push(`/`)
+    const ImageHandler = e => {
+        setImage(e.target.files[0])
+    }
+    console.log('ImageUrl :', imageUrl);
+
+
+    const startCampaign = async (e) => {
+        e.preventDefault();
+        console.log('Started submiting')
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+
+        if (formData.title === "") {
+            alert("Title Field Is Empty");
+        } else if (formData.description === "") {
+            alert("Description Field Is Empty");
+        } else if (formData.amount === "") {
+            alert("Required Amount Field Is Empty");
         }
-    }, [isLoading])
+        else if (imageUrl.length === 0) {
+            alert("Files Upload Required")
+        }
+        else {
+            setIsLoading(true);
+
+            const contract = getEthereumContract();
+
+            const CampaignAmount = ethers.utils.parseEther(formData.amount);
+
+            const { title, description } = formData;
+
+            const campaignData = await contract.createCampaign(
+                title,
+                CampaignAmount,
+                imageUrl,
+                description
+            );
+
+            await campaignData.wait();
+            console.log('Campaign Address', campaignData.to);
+            alert('Campaign Created Successfully', campaignData.to);
+            router.push(`/${campaignData.to}`);
+
+            setAddress(campaignData.to);
+        }
+    }
 
 
     const checkIfWalletIsConnected = async (metamask = eth) => {
@@ -126,11 +169,16 @@ export const TransactionProvider = ({ children }) => {
             value={{
                 connectWallet,
                 currentAccount,
-                isLoading,
+                setIsLoading,
                 logoutWallet,
                 formData,
                 setFormData,
-                handleChange
+                handleChange,
+                image,
+                ImageHandler,
+                setImageUrl,
+                isLoading,
+                startCampaign,
             }}
         >
             {children}

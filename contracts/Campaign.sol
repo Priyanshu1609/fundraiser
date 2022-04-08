@@ -12,22 +12,21 @@ contract CampaignFactory {
         address indexed owner,
         address campaignAddress,
         string imgURI,
-        uint256 indexed timestamp,
-        string indexed category
+        uint256 indexed timestamp
     );
 
     function createCampaign(
         string memory _title,
         uint256 _requiredAmount,
         string memory imgURI,
-        string memory storyURI,
-        string memory category
+        string memory storyURI
     ) public {
         Campaign newCampaign = new Campaign(
             _title,
             _requiredAmount,
             imgURI,
-            storyURI
+            storyURI,
+            msg.sender
         );
 
         campaignAddresses.push(newCampaign);
@@ -38,8 +37,7 @@ contract CampaignFactory {
             msg.sender,
             address(newCampaign),
             imgURI,
-            block.timestamp,
-            category
+            block.timestamp
         );
     }
 
@@ -69,13 +67,14 @@ contract Campaign {
         string memory _title,
         uint256 _requiredAmount,
         string memory imgURI,
-        string memory storyURI
+        string memory storyURI,
+        address _owner
     ) payable {
         title = _title;
         requiredAmount = _requiredAmount;
         image = imgURI;
         story = storyURI;
-        owner = payable(msg.sender);
+        owner = payable(_owner);
     }
 
     function balance() public view returns (uint256) {

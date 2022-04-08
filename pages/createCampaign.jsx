@@ -1,10 +1,15 @@
 import { useContext } from 'react'
 import Modal from 'react-modal'
 import { useRouter } from 'next/router'
+import { create } from "ipfs-http-client";
+
 
 import TransactionLoader from '../components/TransactionLoader'
 import { TransactionContext } from '../context/TransactionContext'
 
+Modal.setAppElement('#__next')
+
+const client = create('https://ipfs.infura.io:5001/api/v0');
 
 const customStyles = {
   content: {
@@ -23,21 +28,28 @@ const customStyles = {
 }
 
 const CreateCampaign = () => {
+
   const router = useRouter();
+  const { formData, setFormData, handleChange, ImageHandler, setIsLoading, setImageUrl, image, isLoading, startCampaign } = useContext(TransactionContext)
 
-  const { formData, setFormData, handleChange } = useContext(TransactionContext)
 
-  const Field = ({ label, value, type, name }) => (
-    <div className="flex flex-col space-y-2 w-full">
-      <label htmlFor="default" className="text-gray-700 select-none font-medium">{label}</label>
-      <input
-        type={`${type}`}
-        placeholder={`${value}`}
-        className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 w-full "
-        onChange={e => handleChange(e, `${name}`)}
-      />
-    </div>
-  )
+  const uploadFiles = async (e) => {
+    e.preventDefault();
+    if (formData.image !== null) {
+      console.log('uploading started')
+      try {
+        console.log(image)
+        const added = await client.add(image);
+        console.log(added.path)
+        setImageUrl(added.path)
+      } catch (error) {
+        console.error(`Error Uploading Image`);
+        throw new Error('Upload files error')
+      }
+    }
+    console.log('Uploaeding finished')
+    alert('Successfully uploaded to IPFS')
+  }
 
   return (
     <div className=''>
@@ -50,7 +62,7 @@ const CreateCampaign = () => {
               type="text"
               placeholder='Title'
               className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 w-full "
-              onChange={e => handleChange(e, 'name')}
+              onChange={e => handleChange(e, 'title')}
             />
           </div>
           <div className="flex flex-col space-y-2 w-full">
@@ -59,7 +71,7 @@ const CreateCampaign = () => {
               type="number"
               placeholder='100 MATIC'
               className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 w-full "
-              onChange={e => handleChange(e, 'goal')}
+              onChange={e => handleChange(e, 'amount')}
             />
           </div>
         </div>
@@ -83,20 +95,22 @@ const CreateCampaign = () => {
               placeholder='Image url'
               accept="image/*"
               className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 w-full "
-              onChange={e => handleChange(e, 'image')}
+              onChange={e => ImageHandler(e)}
             />
           </div>
         </div>
         <div className="flex justify-center flex-col w-full items-center mt-4">
           <div className="mt-4">
-            <button className='text-black text-sm font-semibold border px-4 py-2 rounded-lg hover:text-black hover:border-black  w-72'>Upload Files to IPFS</button>
+            <button
+              onClick={uploadFiles}
+              className='text-black text-sm font-semibold border px-4 py-2 rounded-lg hover:text-black hover:border-black  w-72'>Upload Files to IPFS</button>
           </div>
-          <div className="mt-4">
+          <div className="mt-4" onClick={startCampaign}>
             <input type="submit" className="text-black text-sm font-semibold border px-4 py-2 rounded-lg hover:text-black hover:border-black  w-72" />
           </div>
         </div>
       </div>
-      <Modal isOpen={!!router.query.loading} style={customStyles}>
+      <Modal isOpen={isLoading} style={customStyles}>
         <TransactionLoader />
       </Modal>
     </div>
