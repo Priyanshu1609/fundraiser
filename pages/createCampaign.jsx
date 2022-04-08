@@ -102,7 +102,7 @@ const CreateCampaign = () => {
         <div className="flex justify-center flex-col w-full items-center mt-4">
           <div className="mt-4">
             <button
-              onClick={uploadFiles}
+              // onClick={uploadFiles}
               disabled
               className='text-black text-sm font-semibold border px-4 py-2 rounded-lg hover:text-black hover:border-black  w-72'>Upload Files to IPFS</button>
           </div>
