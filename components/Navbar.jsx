@@ -26,9 +26,9 @@ const Navbar = () => {
 
 
   return (
-    <div className="sticky top-0 ">
-      <div className="shadow">
-        <div className="container mx-auto px-4">
+    <div className="sticky top-0">
+      <div className="shadow ">
+        <div className="container mx-auto px-4 bg-white">
           <div className="flex items-center justify-between py-2">
             <div className="flex" onClick={handleClickHome}>
               <p className="cursor-pointer text-lg font-semibold ml-2 my-auto">FundRaiser</p>

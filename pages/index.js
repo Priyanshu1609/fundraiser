@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 
 import Card from '../components/Card'
@@ -9,10 +9,42 @@ import contractABI from "../src/artifacts/contracts/Campaign.sol/CampaignFactory
 const contractAddress = '0x35cc3c9CDfCBD324e9de15947213a2D650a2dd35';
 // const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
-export default function Home({ AllData }) {
-  const { currentAccount } = useContext(TransactionContext)
+export default function Home() {
+  const { currentAccount } = useContext(TransactionContext);
+  const [campaignsData, setCampaignsData] = useState([]);
 
-  console.log('AllData', AllData)
+  const Request = async () => {
+    const provider = new ethers.providers.JsonRpcProvider(
+      'https://speedy-nodes-nyc.moralis.io/1f78a0705fba1289cf96bf3b/polygon/mumbai'
+    );
+
+    const contract = new ethers.Contract(
+      contractAddress,
+      contractABI.abi,
+      provider
+    );
+
+    const getAllCampaigns = contract.filters.campaignCreated();
+    const AllCampaigns = await contract.queryFilter(getAllCampaigns);
+    const AllData = AllCampaigns.map((e) => {
+      return {
+        title: e.args.title,
+        image: e.args.imgURI,
+        owner: e.args.owner,
+        timeStamp: parseInt(e.args.timestamp),
+        amount: ethers.utils.formatEther(e.args.requiredAmount),
+        address: e.args.campaignAddress
+      }
+    });
+
+    setCampaignsData(AllData);
+  }
+  useEffect(() => {
+    Request();
+  }, [])
+
+
+  console.log('AllData', campaignsData)
   return (
     <div className=''>
       <Head>
@@ -22,7 +54,7 @@ export default function Home({ AllData }) {
       </Head>
       {currentAccount && <div className='grid grid-cols-1 lg:grid-cols-2'>
         {/* title, amount, desc, date, account */}
-        {AllData.map((data) => {
+        {campaignsData.map((data) => {
           return (
             <Card
               title={data.title}
