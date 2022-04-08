@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import Modal from 'react-modal'
 import { useRouter } from 'next/router'
-import { create } from "ipfs-http-client";
+// import { create } from "ipfs-http-client";
 
 
 import TransactionLoader from '../components/TransactionLoader'
@@ -9,7 +9,7 @@ import { TransactionContext } from '../context/TransactionContext'
 
 Modal.setAppElement('#__next')
 
-const client = create('https://ipfs.infura.io:5001/api/v0');
+// const client = create('https://ipfs.infura.io:5001/api/v0');
 
 const customStyles = {
   content: {
@@ -33,23 +33,23 @@ const CreateCampaign = () => {
   const { formData, setFormData, handleChange, ImageHandler, setIsLoading, setImageUrl, image, isLoading, startCampaign } = useContext(TransactionContext)
 
 
-  const uploadFiles = async (e) => {
-    e.preventDefault();
-    if (formData.image !== null) {
-      console.log('uploading started')
-      try {
-        console.log(image)
-        const added = await client.add(image);
-        console.log(added.path)
-        setImageUrl(added.path)
-      } catch (error) {
-        console.error(`Error Uploading Image`);
-        throw new Error('Upload files error')
-      }
-    }
-    console.log('Uploaeding finished')
-    alert('Successfully uploaded to IPFS')
-  }
+  // const uploadFiles = async (e) => {
+  //   e.preventDefault();
+  //   if (formData.image !== null) {
+  //     console.log('uploading started')
+  //     try {
+  //       console.log(image)
+  //       const added = await client.add(image);
+  //       console.log(added.path)
+  //       setImageUrl(added.path)
+  //     } catch (error) {
+  //       console.error(`Error Uploading Image`);
+  //       throw new Error('Upload files error')
+  //     }
+  //   }
+  //   console.log('Uploaeding finished')
+  //   alert('Successfully uploaded to IPFS')
+  // }
 
   return (
     <div className=''>
@@ -103,6 +103,7 @@ const CreateCampaign = () => {
           <div className="mt-4">
             <button
               onClick={uploadFiles}
+              disabled
               className='text-black text-sm font-semibold border px-4 py-2 rounded-lg hover:text-black hover:border-black  w-72'>Upload Files to IPFS</button>
           </div>
           <div className="mt-4" onClick={startCampaign}>

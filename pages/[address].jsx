@@ -110,16 +110,16 @@ const Details = ({ Data, DonationsData }) => {
     }
 
     return (
-        <div class="text-gray-700 body-font overflow-hidden bg-white">
-            <div class="container px-5 py-16 mx-auto">
-                <div class="lg:w-4/5 mx-auto flex flex-wrap">
-                    <img alt="ecommerce" class="lg:w-1/2 w-full h-[32rem] object-cover object-center rounded border border-gray-200" src="https://ik.imagekit.io/q5edmtudmz/FB_IMG_15658659197157667_wOd8n5yFyXI.jpg" />
-                    <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-                        <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">{Data.title}</h1>
-                        <p class="leading-relaxed">{Data.storyUrl}</p>
-                        <div class="flex mt-4 space-x-3">
-                            <button class="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Required Amount : <span className='font-semibold'>{Data.requiredAmount} </span>MATIC</button>
-                            <button class="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Recieved Amount :   <span className='font-semibold'>{Data.recievedAmount} </span>MATIC</button>
+        <div className="text-gray-700 body-font overflow-hidden bg-white">
+            <div className="container px-5 py-16 mx-auto">
+                <div className="lg:w-4/5 mx-auto flex flex-wrap">
+                    <img alt="ecommerce" className="lg:w-1/2 w-full h-[32rem] object-cover object-center rounded border border-gray-200" src="https://ik.imagekit.io/q5edmtudmz/FB_IMG_15658659197157667_wOd8n5yFyXI.jpg" />
+                    <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+                        <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">{Data.title}</h1>
+                        <p className="leading-relaxed">{Data.storyUrl}</p>
+                        <div className="flex mt-4 space-x-3">
+                            <button className="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Required Amount : <span className='font-semibold'>{Data.requiredAmount} </span>MATIC</button>
+                            <button className="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Recieved Amount :   <span className='font-semibold'>{Data.recievedAmount} </span>MATIC</button>
                         </div>
                         <div className='mt-4'>
                             <div className="flex w-full space-x-3">
