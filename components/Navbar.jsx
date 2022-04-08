@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { TransactionContext } from '../context/TransactionContext'
 
 const Navbar = () => {
-  const { connectWallet, currentAccount, logoutWallet } = useContext(TransactionContext)
+  const { connectWallet, currentAccount } = useContext(TransactionContext)
   const [userName, setUserName] = useState('')
 
   useEffect(() => {

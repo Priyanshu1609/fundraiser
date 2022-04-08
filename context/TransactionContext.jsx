@@ -144,17 +144,7 @@ export const TransactionProvider = ({ children }) => {
             throw new Error('No ethereum object.')
         }
     }
-    const logoutWallet = async (metamask = eth) => {
-        try {
-            if (!metamask) return alert('Please install metamask ')
-
-            await metamask.logout();
-
-        } catch (error) {
-            console.error(error)
-            throw new Error('Logout Error')
-        }
-    }
+    
 
     const handleChange = (e, name) => {
         setFormData(prevState => ({ ...prevState, [name]: e.target.value }))
@@ -170,7 +160,6 @@ export const TransactionProvider = ({ children }) => {
                 connectWallet,
                 currentAccount,
                 setIsLoading,
-                logoutWallet,
                 formData,
                 setFormData,
                 handleChange,
