@@ -8,6 +8,7 @@ import CampaignFactory from '../src/artifacts/contracts/Campaign.sol/CampaignFac
 import TransactionLoader from '../components/TransactionLoader';
 
 const contractAddress = '0x35cc3c9CDfCBD324e9de15947213a2D650a2dd35';
+// const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 Modal.setAppElement('#__next')
 
@@ -142,10 +143,10 @@ const Details = ({ Data, DonationsData }) => {
                         </button>
                         <div>
                             <div>
-                                <p>Recent Donation</p>
+                                <p className='font-semibold mt-4 text-lg'>Recent Donation:</p>
                                 {DonationsData.map((e) => {
                                     return (
-                                        <div key={e.donar}>
+                                        <div className='w-full border my-2 p-2 flex items-center justify-evenly' key={e.timestamp}>
                                             <p>{e.donar.slice(0, 6)}...{e.donar.slice(39)}</p>
                                             <p>{e.amount} Matic</p>
                                             <p>{new Date(e.timestamp * 1000).toLocaleString()}</p>
@@ -155,10 +156,10 @@ const Details = ({ Data, DonationsData }) => {
                                 }
                             </div>
                             <div>
-                                <p>My Past Donation</p>
+                                <p className='font-semibold mt-4 text-lg'>My Past Donation</p>
                                 {mydonations.map((e) => {
                                     return (
-                                        <div key={e.donar}>
+                                        <div className='w-full border my-2 p-2 flex items-center justify-evenly' key={e.timestamp}>
                                             <p>{e.donar.slice(0, 6)}...{e.donar.slice(39)}</p>
                                             <p>{e.amount} Matic</p>
                                             <p>{new Date(e.timestamp * 1000).toLocaleString()}</p>

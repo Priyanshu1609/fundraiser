@@ -7,6 +7,7 @@ import Card from '../components/Card'
 import { TransactionContext } from '../context/TransactionContext'
 import contractABI from "../src/artifacts/contracts/Campaign.sol/CampaignFactory.json"
 const contractAddress = '0x35cc3c9CDfCBD324e9de15947213a2D650a2dd35';
+// const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 export default function Home({ AllData }) {
   const { currentAccount } = useContext(TransactionContext)
@@ -30,7 +31,7 @@ export default function Home({ AllData }) {
               date={data.timeStamp}
               account={data.address}
               image={data.image}
-              key={data.id}
+              key={data.timeStamp}
             />
           )
         })}

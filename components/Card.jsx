@@ -1,16 +1,16 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 
-const Card = ({ title, amount, desc, date, account }) => {
+const Card = ({ title, amount, desc, date, account, image }) => {
 
     const router = useRouter();
     const handleClick = () => {
         router.push(`/${account}`);
     }
-console.log('Now need contract address', account);
+    console.log('Image in card', image)
     return (
         <div className="flex shadow-lg  mx-6 md:mx-auto my-8 md:max-w-2xl h-72">
-            <img className="h-full w-full md:w-1/3  object-cover rounded-lg rounded-r-none pb-5/6" src="https://ik.imagekit.io/q5edmtudmz/FB_IMG_15658659197157667_wOd8n5yFyXI.jpg" alt="bag" />
+            <img className="h-full w-full md:w-1/3  object-cover rounded-lg rounded-r-none pb-5/6" src='https://ik.imagekit.io/q5edmtudmz/FB_IMG_15658659197157667_wOd8n5yFyXI.jpg' alt="bag" />
             <div className="w-full relative md:w-2/3 px-4 py-4 bg-white rounded-lg">
                 <div className="flex items-center">
                     <h2 className="text-xl text-gray-800 font-medium mr-auto">{title}</h2>

@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 
 import contractABI from "../src/artifacts/contracts/Campaign.sol/CampaignFactory.json"
 const contractAddress = '0x35cc3c9CDfCBD324e9de15947213a2D650a2dd35';
+// const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 export const TransactionContext = React.createContext()
 
@@ -52,13 +53,11 @@ export const TransactionProvider = ({ children }) => {
         amount: '',
     })
     const [image, setImage] = useState(null)
-    const [imageUrl, setImageUrl] = useState('asdfasdf')
-    console.log(formData);
+    const [imageUrl, setImageUrl] = useState('https://ik.imagekit.io/q5edmtudmz/FB_IMG_15658659197157667_wOd8n5yFyXI.jpg')
 
     const ImageHandler = e => {
         setImage(e.target.files[0])
     }
-    console.log('ImageUrl :', imageUrl);
 
 
     const startCampaign = async (e) => {
@@ -95,8 +94,11 @@ export const TransactionProvider = ({ children }) => {
 
             await campaignData.wait();
             console.log('Campaign Address', campaignData.to);
+            console.log('Contract', campaignData);
             alert('Campaign Created Successfully', campaignData.to);
-            router.push(`/`);
+            router.push('/')
+            // router.push(`/${campaignData.to}`);
+            setIsLoading(false)
             setAddress(campaignData.to);
         }
     }

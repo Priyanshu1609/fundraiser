@@ -48,6 +48,7 @@ export default function Dashboard() {
         {/* title, amount, desc, date, account */}
         {campaignsData.map((data) => {
           return (
+    
             <Card
               title={data.title}
               amount={data.amount}
@@ -55,7 +56,7 @@ export default function Dashboard() {
               date={data.timeStamp}
               account={data.address}
               image={data.image}
-              key={data.id}
+              key={data.timeStamp}
             />
           )
         })}
