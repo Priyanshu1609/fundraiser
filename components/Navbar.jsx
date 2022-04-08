@@ -30,16 +30,16 @@ const Navbar = () => {
       <div className="shadow">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between py-2">
-            <div className="flex">
+            <div className="flex" onClick={handleClickHome}>
               <p className="cursor-pointer text-lg font-semibold ml-2 my-auto">FundRaiser</p>
             </div>
 
             {/* NavBarItems */}
 
             {currentAccount && <div className="hidden sm:flex sm:items-center">
-              <p className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickHome} >Campaigns</p>
-              <p className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickCampaign} >Create Campaign</p>
-              <p className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickDashboard} >Dashboard</p>
+              <button className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickHome} >Campaigns</button>
+              <button className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickCampaign} >Create Campaign</button>
+              <button disabled className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer " onClick={handleClickDashboard} >Dashboard</button>
             </div>}
 
             {/* Auth Buttons */}
