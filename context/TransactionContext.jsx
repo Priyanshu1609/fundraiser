@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { toast } from 'react-toastify';
 
 import contractABI from "../src/artifacts/contracts/Campaign.sol/CampaignFactory.json"
-const contractAddress = '0x35cc3c9CDfCBD324e9de15947213a2D650a2dd35';
+const contractAddress = '0x066a327b3aa3D23B4CdCf009d454FD7cE770c793';
 // const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 export const TransactionContext = React.createContext()

@@ -7,7 +7,7 @@ import Campaign from '../src/artifacts/contracts/Campaign.sol/Campaign.json'
 import CampaignFactory from '../src/artifacts/contracts/Campaign.sol/CampaignFactory.json'
 import TransactionLoader from '../components/TransactionLoader';
 
-const contractAddress = '0x35cc3c9CDfCBD324e9de15947213a2D650a2dd35';
+const contractAddress = '0x066a327b3aa3D23B4CdCf009d454FD7cE770c793';
 // const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 Modal.setAppElement('#__next')
@@ -34,7 +34,7 @@ const Details = ({ Data, DonationsData }) => {
     const [change, setChange] = useState(false);
     const [mydonations, setMydonations] = useState([]);
 
-    const { isLoading, setIsLoading } = useContext(TransactionContext);
+    const { isLoading, setIsLoading, currentAccount } = useContext(TransactionContext);
 
     console.log('My Donations', mydonations);
 
@@ -57,6 +57,7 @@ const Details = ({ Data, DonationsData }) => {
 
         const MyDonations = contract.filters.donated(Address);
         const MyAllDonations = await contract.queryFilter(MyDonations);
+        ;
 
         setMydonations(MyAllDonations.map((e) => {
             return {
@@ -73,12 +74,21 @@ const Details = ({ Data, DonationsData }) => {
     const DonateFunds = async () => {
         try {
             console.log('Donating funds', amount)
+            if (Data.requiredAmount > Data.recievedAmount) {
+                alert('Amount is greater than required amount')
+                return;
+            }
+            if (!amount) {
+                alert('Amount is less than or equal to 0')
+                return;
+            }
+
             await window.ethereum.request({ method: 'eth_requestAccounts' });
-            setIsLoading(true)
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
 
             const contract = new ethers.Contract(Data.address, Campaign.abi, signer);
+            setIsLoading(true)
             const transaction = await contract.donate({ value: ethers.utils.parseEther(amount) });
             await transaction.wait();
             setIsLoading(false)
@@ -87,12 +97,16 @@ const Details = ({ Data, DonationsData }) => {
             alert('Donation Successful')
 
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
     const WithDrawFunds = async () => {
         try {
-            console.log('WithDrawing funds')
+            console.log('WithDrawing funds', recieved)
+            if (!Data.recievedAmount) {
+                alert('Make a donation first')
+                return;
+            }
             await window.ethereum.request({ method: 'eth_requestAccounts' });
             setIsLoading(true)
             const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -109,6 +123,7 @@ const Details = ({ Data, DonationsData }) => {
             console.log(error);
         }
     }
+
 
     return (
         <div className="text-gray-700 body-font overflow-hidden bg-white">
@@ -139,8 +154,9 @@ const Details = ({ Data, DonationsData }) => {
                         <button
                             onClick={WithDrawFunds}
                             className='text-black text-sm mt-4 border px-4 py-3 rounded-lg hover:text-black hover:border-black  w-full'>
-                            WithDraw All
+                            WithDraw
                         </button>
+
                         <div>
                             <div>
                                 <p className='font-semibold mt-4 text-lg'>Recent Donation:</p>

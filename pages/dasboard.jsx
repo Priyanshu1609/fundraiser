@@ -5,7 +5,7 @@ import Card from '../components/Card'
 import { TransactionContext } from '../context/TransactionContext'
 import contractABI from "../src/artifacts/contracts/Campaign.sol/CampaignFactory.json"
 
-const contractAddress = '0x35cc3c9CDfCBD324e9de15947213a2D650a2dd35';
+const contractAddress = '0x066a327b3aa3D23B4CdCf009d454FD7cE770c793';
 
 export default function Dashboard() {
   const [campaignsData, setCampaignsData] = useState([]);
@@ -48,7 +48,7 @@ export default function Dashboard() {
         {/* title, amount, desc, date, account */}
         {campaignsData.map((data) => {
           return (
-    
+
             <Card
               title={data.title}
               amount={data.amount}

@@ -6,7 +6,7 @@ import Card from '../components/Card'
 
 import { TransactionContext } from '../context/TransactionContext'
 import contractABI from "../src/artifacts/contracts/Campaign.sol/CampaignFactory.json"
-const contractAddress = '0x35cc3c9CDfCBD324e9de15947213a2D650a2dd35';
+const contractAddress = '0x066a327b3aa3D23B4CdCf009d454FD7cE770c793';
 // const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
 
     const getAllCampaigns = contract.filters.campaignCreated();
     const AllCampaigns = await contract.queryFilter(getAllCampaigns);
-    const AllData = AllCampaigns.map((e) => {
+    let AllData = AllCampaigns.map((e) => {
       return {
         title: e.args.title,
         image: e.args.imgURI,
@@ -36,6 +36,7 @@ export default function Home() {
         address: e.args.campaignAddress
       }
     });
+    AllData = AllData.reverse();
 
     setCampaignsData(AllData);
   }
@@ -78,33 +79,3 @@ export default function Home() {
   )
 }
 
-export async function getStaticProps() {
-  const provider = new ethers.providers.JsonRpcProvider(
-    'https://speedy-nodes-nyc.moralis.io/1f78a0705fba1289cf96bf3b/polygon/mumbai'
-  );
-
-  const contract = new ethers.Contract(
-    contractAddress,
-    contractABI.abi,
-    provider
-  );
-
-  const getAllCampaigns = contract.filters.campaignCreated();
-  const AllCampaigns = await contract.queryFilter(getAllCampaigns);
-  const AllData = AllCampaigns.map((e) => {
-    return {
-      title: e.args.title,
-      image: e.args.imgURI,
-      owner: e.args.owner,
-      timeStamp: parseInt(e.args.timestamp),
-      amount: ethers.utils.formatEther(e.args.requiredAmount),
-      address: e.args.campaignAddress
-    }
-  });
-
-  return {
-    props: {
-      AllData
-    }
-  }
-}

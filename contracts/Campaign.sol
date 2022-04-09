@@ -83,6 +83,9 @@ contract Campaign {
 
     function donate() public payable {
         require(requiredAmount > recievedAmount, "Rquired amount fulfilled");
+        if (recievedAmount == requiredAmount) {
+            releaseFunds();
+        }
 
         if (donators[owner] == 0) {
             donators[owner] += msg.value;
@@ -93,21 +96,25 @@ contract Campaign {
 
         // owner.transfer(msg.value);
         recievedAmount += msg.value;
-        emit donated(owner, msg.value, block.timestamp);
+        emit donated(msg.sender, msg.value, block.timestamp);
     }
 
     function withdraw() public payable {
         for (uint256 i = 1; i <= donatorCount; i++) {
-            if (donatorsAddress[i] == owner) {
+            if (donatorsAddress[i] == msg.sender) {
                 address _to = donatorsAddress[i];
                 uint256 _amount = donators[_to];
                 payable(_to).transfer(_amount);
 
-                donators[owner] = 0;
+                donators[msg.sender] = 0;
                 donatorsAddress[i] = address(0);
                 recievedAmount -= _amount;
                 break;
             }
         }
+    }
+
+    function releaseFunds() public payable {
+        payable(owner).transfer(requiredAmount);
     }
 }
