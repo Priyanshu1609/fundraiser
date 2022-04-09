@@ -106,12 +106,14 @@ const Details = ({ Data, DonationsData }) => {
     const DonateFunds = async () => {
         try {
             console.log('Donating funds', amount)
-            if (newData.requiredAmount < newData.recievedAmount || newData.recievedAmount < amount) {
+            if (newData.requiredAmount - newData.recievedAmount < amount) {
+                console.log('Recived', newData.recievedAmount)
+                console.log('Required', newData.requiredAmount)
                 alert('Amount is greater than required amount')
                 return;
             }
             if (!amount) {
-                alert('Amount is less than or equal to 0')
+                alert('Cannot donate, Either the campaign closed or required amount doesnot match')
                 return;
             }
 
