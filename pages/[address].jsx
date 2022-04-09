@@ -33,6 +33,8 @@ const Details = ({ Data, DonationsData }) => {
     const [amount, setAmount] = useState();
     const [change, setChange] = useState(false);
     const [mydonations, setMydonations] = useState([]);
+    const [newData, setNewData] = useState({})
+    const [newDonations, setNewDonations] = useState([])
 
     const { isLoading, setIsLoading, currentAccount } = useContext(TransactionContext);
 
@@ -66,6 +68,36 @@ const Details = ({ Data, DonationsData }) => {
                 timestamp: parseInt(e.args.timestamp)
             }
         }));
+
+        const title = await contract.title();
+        const requiredAmount = await contract.requiredAmount();
+        const image = await contract.image();
+        const storyUrl = await contract.story();
+        const owner = await contract.owner();
+        const recievedAmount = await contract.recievedAmount();
+
+        const Donations = contract.filters.donated();
+        const AllDonations = await contract.queryFilter(Donations);
+
+
+        const newData = {
+            address: Data.address,
+            title,
+            requiredAmount: ethers.utils.formatEther(requiredAmount),
+            image,
+            recievedAmount: ethers.utils.formatEther(recievedAmount),
+            storyUrl,
+            owner,
+        }
+        setNewData(newData)
+
+        setNewDonations(AllDonations.map((e) => {
+            return {
+                donar: e.args.donar,
+                amount: ethers.utils.formatEther(e.args.amount),
+                timestamp: parseInt(e.args.timestamp)
+            }
+        }));
     }
     useEffect(() => {
         Request();
@@ -74,7 +106,7 @@ const Details = ({ Data, DonationsData }) => {
     const DonateFunds = async () => {
         try {
             console.log('Donating funds', amount)
-            if (Data.requiredAmount < Data.recievedAmount) {
+            if (newData.requiredAmount < newData.recievedAmount || newData.recievedAmount < amount) {
                 alert('Amount is greater than required amount')
                 return;
             }
@@ -97,13 +129,14 @@ const Details = ({ Data, DonationsData }) => {
             alert('Donation Successful')
 
         } catch (error) {
+            setIsLoading(false)
             console.error(error);
         }
     }
     const WithDrawFunds = async () => {
         try {
-            
-            if (!Data.recievedAmount) {
+
+            if (!newData.recievedAmount) {
                 alert('Make a donation first')
                 return;
             }
@@ -120,6 +153,7 @@ const Details = ({ Data, DonationsData }) => {
             alert('Withdrawal Successful')
 
         } catch (error) {
+            setIsLoading(false)
             console.error(error);
         }
     }
@@ -134,8 +168,8 @@ const Details = ({ Data, DonationsData }) => {
                         <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">{Data.title}</h1>
                         <p className="leading-relaxed">{Data.storyUrl}</p>
                         <div className="flex mt-4 space-x-3">
-                            <button className="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Required Amount : <span className='font-semibold'>{Data.requiredAmount} </span>MATIC</button>
-                            <button className="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Recieved Amount :   <span className='font-semibold'>{Data.recievedAmount} </span>MATIC</button>
+                            <button className="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Required Amount : <span className='font-semibold'>{newData.requiredAmount} </span>MATIC</button>
+                            <button className="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Recieved Amount :   <span className='font-semibold'>{newData.recievedAmount} </span>MATIC</button>
                         </div>
                         <div className='mt-4'>
                             <div className="flex w-full space-x-3">
@@ -160,7 +194,7 @@ const Details = ({ Data, DonationsData }) => {
                         <div>
                             <div>
                                 <p className='font-semibold mt-4 text-lg'>Recent Donation:</p>
-                                {DonationsData.map((e) => {
+                                {newDonations.map((e) => {
                                     return (
                                         <div className='w-full border my-2 p-2 flex items-center justify-evenly' key={e.timestamp}>
                                             <p>{e.donar.slice(0, 6)}...{e.donar.slice(39)}</p>
