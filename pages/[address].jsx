@@ -74,7 +74,7 @@ const Details = ({ Data, DonationsData }) => {
     const DonateFunds = async () => {
         try {
             console.log('Donating funds', amount)
-            if (Data.requiredAmount > Data.recievedAmount) {
+            if (Data.requiredAmount < Data.recievedAmount) {
                 alert('Amount is greater than required amount')
                 return;
             }
@@ -102,7 +102,7 @@ const Details = ({ Data, DonationsData }) => {
     }
     const WithDrawFunds = async () => {
         try {
-            console.log('WithDrawing funds', recieved)
+            
             if (!Data.recievedAmount) {
                 alert('Make a donation first')
                 return;
@@ -120,7 +120,7 @@ const Details = ({ Data, DonationsData }) => {
             alert('Withdrawal Successful')
 
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 
