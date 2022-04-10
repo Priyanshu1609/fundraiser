@@ -166,6 +166,7 @@ const Details = ({ Data, DonationsData }) => {
 
             const transaction = await contract.withdraw();
             await transaction.wait();
+            setChange(true);
             setIsLoading(false);
             alert('Withdrawal Successful')
 
