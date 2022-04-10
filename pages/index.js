@@ -1,21 +1,41 @@
 import Head from 'next/head'
 import { useContext, useEffect, useState } from 'react'
 import { ethers } from 'ethers'
+import Modal from 'react-modal'
 
 import Card from '../components/Card'
 
+Modal.setAppElement('#__next')
+
 import { TransactionContext } from '../context/TransactionContext'
 import contractABI from "../src/artifacts/contracts/Campaign.sol/CampaignFactory.json"
+import TransactionLoader from '../components/TransactionLoader'
 const contractAddress = '0x066a327b3aa3D23B4CdCf009d454FD7cE770c793';
 // const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: '#0a0b0d',
+    padding: 0,
+    border: 'none',
+  },
+  overlay: {
+    backgroundColor: 'rgba(10, 11, 13, 0.75)',
+  },
+}
+
 export default function Home() {
-  const { currentAccount } = useContext(TransactionContext);
+  const { currentAccount, setIsLoading, isLoading } = useContext(TransactionContext);
   const [campaignsData, setCampaignsData] = useState([]);
 
   const Request = async () => {
     const provider = new ethers.providers.JsonRpcProvider(
-      'https://speedy-nodes-nyc.moralis.io/1f78a0705fba1289cf96bf3b/polygon/mumbai'
+      `${process.env.NEXT_PUBLIC_RPC_URL}`
     );
 
     const contract = new ethers.Contract(
@@ -23,7 +43,7 @@ export default function Home() {
       contractABI.abi,
       provider
     );
-
+    setIsLoading(true);
     const getAllCampaigns = contract.filters.campaignCreated();
     const AllCampaigns = await contract.queryFilter(getAllCampaigns);
     let AllData = AllCampaigns.map((e) => {
@@ -39,6 +59,7 @@ export default function Home() {
     AllData = AllData.reverse();
 
     setCampaignsData(AllData);
+    setIsLoading(false);
   }
   useEffect(() => {
     Request();
@@ -74,6 +95,10 @@ export default function Home() {
         <p className='font-bold text-6xl'>Please Login</p>
         <p className='text-lg font-semibold mt-4'>Use Polygon Mumbai Testnet to login</p>
       </div>}
+
+      <Modal isOpen={isLoading} style={customStyles}>
+        <TransactionLoader />
+      </Modal>
 
     </div>
   )

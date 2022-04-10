@@ -35,6 +35,7 @@ const Details = ({ Data, DonationsData }) => {
     const [mydonations, setMydonations] = useState([]);
     const [newData, setNewData] = useState({})
     const [newDonations, setNewDonations] = useState([])
+    const [close, setClose] = useState(false);
 
     const { isLoading, setIsLoading, currentAccount } = useContext(TransactionContext);
 
@@ -48,7 +49,7 @@ const Details = ({ Data, DonationsData }) => {
         const Address = await signer.getAddress();
 
         const provider = new ethers.providers.JsonRpcProvider(
-            'https://speedy-nodes-nyc.moralis.io/1f78a0705fba1289cf96bf3b/polygon/mumbai'
+            `${process.env.NEXT_PUBLIC_RPC_URL}`
         );
 
         const contract = new ethers.Contract(
@@ -56,7 +57,7 @@ const Details = ({ Data, DonationsData }) => {
             Campaign.abi,
             provider
         );
-
+        setIsLoading(true);
         const MyDonations = contract.filters.donated(Address);
         const MyAllDonations = await contract.queryFilter(MyDonations);
         ;
@@ -98,6 +99,13 @@ const Details = ({ Data, DonationsData }) => {
                 timestamp: parseInt(e.args.timestamp)
             }
         }));
+        setIsLoading(false);
+
+        if (newData.requiredAmount === newData.recievedAmount) {
+            setClose(true);
+            releaseFunds();
+        }
+
     }
     useEffect(() => {
         Request();
@@ -111,6 +119,11 @@ const Details = ({ Data, DonationsData }) => {
                 console.log('Required', newData.requiredAmount)
                 alert('Amount is greater than required amount')
                 return;
+            }
+            if (newData.requiredAmount === newData.recievedAmount + amount) {
+                console.log('campaign Closed')
+                releaseFunds();
+                setClose(true);
             }
             if (!amount) {
                 alert('Cannot donate, Either the campaign closed or required amount doesnot match')
@@ -130,6 +143,8 @@ const Details = ({ Data, DonationsData }) => {
             setAmount('');
             alert('Donation Successful')
 
+
+
         } catch (error) {
             setIsLoading(false)
             console.error(error);
@@ -138,7 +153,7 @@ const Details = ({ Data, DonationsData }) => {
     const WithDrawFunds = async () => {
         try {
 
-            if (!newData.recievedAmount) {
+            if (newData.recievedAmount <= 0) {
                 alert('Make a donation first')
                 return;
             }
@@ -159,6 +174,28 @@ const Details = ({ Data, DonationsData }) => {
             console.error(error);
         }
     }
+    const releaseFunds = async () => {
+        alert('Campaign Closed')
+        try {
+
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            setIsLoading(true)
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+
+            const contract = new ethers.Contract(Data.address, Campaign.abi, signer);
+
+            const transaction = await contract.releaseFunds();
+            await transaction.wait();
+            setIsLoading(false);
+            alert('Funds Released, Campaign Closed')
+
+        } catch (error) {
+            setIsLoading(false)
+            console.error(error);
+        }
+    }
+
 
 
     return (
@@ -173,26 +210,37 @@ const Details = ({ Data, DonationsData }) => {
                             <button className="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Required Amount : <span className='font-semibold'>{newData.requiredAmount} </span>MATIC</button>
                             <button className="text-black text-sm  border px-4 py-2 rounded-lg hover:text-black hover:border-black mt-4 w-full">Recieved Amount :   <span className='font-semibold'>{newData.recievedAmount} </span>MATIC</button>
                         </div>
-                        <div className='mt-4'>
-                            <div className="flex w-full space-x-3">
-                                <input
-                                    type='number'
-                                    className="px-4 py-2 rounded-lg border border-gray-300 w-full "
-                                    placeholder="Enter Amount"
-                                    value={amount}
-                                    onChange={e => setAmount(e.target.value)}
-                                />
-                                <button
-                                    onClick={DonateFunds}
-                                    className='text-black text-sm h-full border px-4 py-3 rounded-lg hover:text-black hover:border-black  w-full'>Donate</button>
+                        {!close && <div>
+                            <div className='mt-4'>
+                                <div className="flex w-full space-x-3">
+                                    <input
+                                        type='number'
+                                        className="px-4 py-2 rounded-lg border border-gray-300 w-full "
+                                        placeholder="Enter Amount"
+                                        value={amount}
+                                        onChange={e => setAmount(e.target.value)}
+                                    />
+                                    <button
+                                        onClick={DonateFunds}
+                                        className='text-black text-sm h-full border px-4 py-3 rounded-lg hover:text-black hover:border-black  w-full'>Donate</button>
+                                </div>
                             </div>
-                        </div>
-                        <button
-                            onClick={WithDrawFunds}
-                            className='text-black text-sm mt-4 border px-4 py-3 rounded-lg hover:text-black hover:border-black  w-full'>
-                            WithDraw
-                        </button>
+                            <button
+                                onClick={WithDrawFunds}
+                                className='text-black text-sm mt-4 border px-4 py-3 rounded-lg hover:text-black hover:border-black  w-full'>
+                                WithDraw
+                            </button>
+                        </div>}
+                        {close &&
+                            <div>
+                                <button
+                                    disabled
+                                    className='text-red-500 text-sm mt-4 border px-4 py-3 rounded-lg  hover:border-red-500  w-full'>
+                                    Campaign Closed
+                                </button>
 
+                            </div>
+                        }
                         <div>
                             <div>
                                 <p className='font-semibold mt-4 text-lg'>Recent Donation:</p>
@@ -235,7 +283,7 @@ export default Details
 
 export async function getStaticPaths() {
     const provider = new ethers.providers.JsonRpcProvider(
-        'https://speedy-nodes-nyc.moralis.io/1f78a0705fba1289cf96bf3b/polygon/mumbai'
+        `${process.env.NEXT_PUBLIC_RPC_URL}`
     );
 
     const contract = new ethers.Contract(
@@ -259,7 +307,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const provider = new ethers.providers.JsonRpcProvider(
-        'https://speedy-nodes-nyc.moralis.io/1f78a0705fba1289cf96bf3b/polygon/mumbai'
+        `${process.env.NEXT_PUBLIC_RPC_URL}`
     );
 
     const contract = new ethers.Contract(

@@ -13,7 +13,7 @@ export default function Dashboard() {
 
   const Request = async () => {
     const provider = new ethers.providers.JsonRpcProvider(
-      'https://speedy-nodes-nyc.moralis.io/1f78a0705fba1289cf96bf3b/polygon/mumbai'
+      `${process.env.NEXT_PUBLIC_RPC_URL}`
     );
 
     const contract = new ethers.Contract(
