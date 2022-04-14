@@ -10,6 +10,7 @@ import TransactionLoader from '../components/TransactionLoader';
 const contractAddress = '0x066a327b3aa3D23B4CdCf009d454FD7cE770c793';
 // const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
+
 Modal.setAppElement('#__next')
 
 const customStyles = {
