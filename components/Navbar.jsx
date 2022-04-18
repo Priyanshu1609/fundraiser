@@ -36,16 +36,16 @@ const Navbar = () => {
 
             {/* NavBarItems */}
 
-            {currentAccount && <div className="hidden sm:flex sm:items-center">
+            {currentAccount && <div className="flex items-center mx-2">
               <button className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickHome} >Campaigns</button>
               <button className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer" onClick={handleClickCampaign} >Create Campaign</button>
-              <button disabled className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer " onClick={handleClickDashboard} >Dashboard</button>
+              {/* <button disabled className="text-black text-sm font-semibold hover:opacity-80 mr-4 cursor-pointer " onClick={handleClickDashboard} >Dashboard</button> */}
             </div>}
 
             {/* Auth Buttons */}
-            <div className="hidden sm:flex sm:items-center space-x-2">
+            <div className="space-x-2">
               <>
-                {!currentAccount && <div className="">
+                {!currentAccount && <div className="flexitems-center">
                   <AuthButton
                     onClick={handleClickSignin}
                     text="Sign In"
